@@ -4,9 +4,9 @@ Aplicacio Angular per registrar la recollida de residus en plantes industrials (
 
 ## Demo web
 
-Despres d'activar GitHub Pages al repositori, la web queda publicada a:
+https://as-ten-mu.vercel.app/
 
-https://nicolai16.github.io/IvanProjecteFinal/
+GitHub Pages (alternativa): https://nicolai16.github.io/IvanProjecteFinal/
 
 ## Desenvolupament local
 
