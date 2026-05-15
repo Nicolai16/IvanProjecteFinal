@@ -1,0 +1,24 @@
+@use "sass:color";
+
+/* Global baseline for EcoTrack */
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  background: #f6f8fb;
+  color: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}

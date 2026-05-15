@@ -1,0 +1,133 @@
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="title">{{ title() }}</div>
+        <div class="subtitle">Registre offline de recollida de residus · Operaris EcoSolutions</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" type="button" (click)="togglePendentsOnly()">
+        @if (showPendentsOnly()) { Mostrant: Pendents } @else { Mostrant: Tots }
+      </button>
+      <button class="btn btn-ghost" type="button" (click)="resetSeed()">Demo</button>
+      <button class="btn btn-danger" type="button" (click)="clearAll()">Buidar</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid">
+      <article class="card">
+        <div class="card-header">
+          <h2>Nou residu</h2>
+          <p>Es desa automàticament al dispositiu.</p>
+        </div>
+
+        <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+          <label class="field">
+            <span>Nom del residu</span>
+            <input class="input" type="text" formControlName="nom" placeholder="Ex: Plàstic PET" />
+            @if (form.controls.nom.touched && form.controls.nom.invalid) {
+              <small class="error">Introdueix un nom (mínim 2 caràcters).</small>
+            }
+          </label>
+
+          <div class="row">
+            <label class="field">
+              <span>Tipus</span>
+              <select class="input" formControlName="tipus">
+                @for (t of tipusOptions; track t) {
+                  <option [value]="t">{{ t }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Pes (kg)</span>
+              <input class="input" type="number" inputmode="decimal" step="0.1" min="0.01" formControlName="pesKg" />
+              @if (form.controls.pesKg.touched && form.controls.pesKg.invalid) {
+                <small class="error">El pes ha de ser \(> 0\).</small>
+              }
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Data</span>
+            <input class="input" type="date" formControlName="dataIso" />
+          </label>
+
+          <div class="row row-end">
+            <button class="btn btn-primary" type="submit">Afegir residu</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card">
+        <div class="card-header">
+          <h2>Inventari</h2>
+          <p>
+            Total: <strong>{{ residusSvc.stats().total }}</strong>
+            · Pendents: <strong>{{ residusSvc.stats().pendents }}</strong>
+            · Processats: <strong>{{ residusSvc.stats().processats }}</strong>
+            · Kg: <strong>{{ residusSvc.stats().totalKg | number: '1.0-1' }}</strong>
+          </p>
+        </div>
+
+        <div class="list">
+          @if (llista().length === 0) {
+            <div class="empty">
+              <div class="empty-title">No hi ha residus</div>
+              <div class="empty-subtitle">Afegeix-ne un amb el formulari de l’esquerra.</div>
+            </div>
+          } @else {
+            @for (r of llista(); track r.id) {
+              <div class="item">
+                <div class="item-main">
+                  <div class="item-top">
+                    <div class="item-name">{{ r.nom }}</div>
+                    <div class="badges">
+                      <span
+                        class="badge"
+                        [class.badge-danger]="r.tipus === 'Perillós'"
+                        [class.badge-ok]="r.tipus === 'Reciclable'"
+                        [class.badge-warn]="r.tipus === 'Especial'"
+                      >
+                        {{ r.tipus }}
+                      </span>
+                      <span class="badge" [class.badge-pending]="r.estat === 'Pendent'" [class.badge-done]="r.estat === 'Processat'">
+                        {{ r.estat }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="item-meta">
+                    <span>{{ r.dataIso }}</span>
+                    <span>·</span>
+                    <span><strong>{{ r.pesKg | number: '1.0-2' }}</strong> kg</span>
+                    <span class="mono">· {{ r.id }}</span>
+                  </div>
+                </div>
+
+                <div class="item-actions">
+                  <button class="btn btn-ghost" type="button" (click)="toggleEstat(r.id)">
+                    @if (r.estat === 'Pendent') { Processar } @else { Marcar pendent }
+                  </button>
+                  <button class="btn btn-danger" type="button" (click)="remove(r.id)">Eliminar</button>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>EcoTrack · Nicolas Puriy</span>
+    <span class="dot">•</span>
+    <span>Preparada per PWA + APK</span>
+  </footer>
+</div>
+
